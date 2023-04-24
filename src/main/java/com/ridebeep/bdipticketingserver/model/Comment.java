@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +16,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "comments")
 public class Comment {
+
+    @Id
+    @Column(name = "comment_id", columnDefinition = "BINARY(16)", insertable = false)
+    private UUID commentId;
+
+    @NotNull
+    @Column(name = "ticket_id", columnDefinition = "BINARY(16)", insertable = false)
+    private UUID ticketId;
+
+    @NotNull
+    @Lob
+    @Column(name="comment")
+    private String comment;
+
 }
