@@ -32,19 +32,19 @@ info:
       target: "@java.version@"
 spring:
   datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: ticketing
+    password: ticketing-password-local
   jpa:
-    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: true
     show-sql: true
     open-in-view: false
     hibernate:
       ddl-auto: create
-  .h2:
-    console.enabled: true
+    properties:
+      hibernate:
+        format_sql: true
   data:
     rest:
       enable-enum-translation: true
