@@ -21,7 +21,7 @@ import java.util.UUID;
 public class Tenant {
 
     @Id
-    @Column(name = "tenant_id", columnDefinition = "BINARY(16)", insertable = false)
+    @Column(name = "tenant_id", columnDefinition = "BINARY(16)")
     private UUID tenantId;
 
     @NotNull

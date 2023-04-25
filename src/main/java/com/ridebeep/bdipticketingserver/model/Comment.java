@@ -18,11 +18,11 @@ import java.util.UUID;
 public class Comment {
 
     @Id
-    @Column(name = "comment_id", columnDefinition = "BINARY(16)", insertable = false)
+    @Column(name = "comment_id", columnDefinition = "BINARY(16)")
     private UUID commentId;
 
     @NotNull
-    @Column(name = "ticket_id", columnDefinition = "BINARY(16)", insertable = false)
+    @Column(name = "ticket_id", columnDefinition = "BINARY(16)")
     private UUID ticketId;
 
     @NotNull
