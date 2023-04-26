@@ -1,18 +1,21 @@
 package com.ridebeep.bdipticketingserver.model.enums;
 
 public enum TimeUnit {
-    DAYS("days"),
-    HOURS("hours"),
-    MINUTES("minutes"),
-    SECONDS("seconds");
+    NANOSECONDS("NANOSECONDS"),
+    MICROSECONDS("MICROSECONDS"),
+    MILLISECONDS("MILLISECONDS"),
+    SECONDS("SECONDS"),
+    MINUTES("MINUTES"),
+    HOURS("MINUTES"),
+    DAYS("DAYS");
 
-    private String unit;
+    private String timeUnit;
 
-    TimeUnit(String unit) {
-        this.unit = unit;
+    TimeUnit(String timeUnit) {
+        this.timeUnit = timeUnit;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getTimeUnit() {
+        return timeUnit;
     }
 }

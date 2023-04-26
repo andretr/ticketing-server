@@ -1,6 +1,6 @@
 package com.ridebeep.bdipticketingserver.model.enums;
 
-public enum Status {
+public enum TicketStatus {
     CREATED,
     ACKNOWLEDGED,
     CLOSED,

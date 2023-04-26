@@ -1,15 +1,18 @@
 package com.ridebeep.bdipticketingserver.model;
 
+import com.ridebeep.bdipticketingserver.utils.TimeUnitConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -22,11 +25,11 @@ import java.util.concurrent.TimeUnit;
 public class Priority {
 
     @Id
-    @Column(name = "priority_id", columnDefinition = "BINARY(16)")
+    @Column(name = "priority_id")
     private UUID priorityId;
 
     @NotNull
-    @Column(name="category_id", columnDefinition = "BINARY(16)")
+    @Column(name="category_id")
     private UUID categoryId;
 
     @NotNull
@@ -38,7 +41,10 @@ public class Priority {
     private Integer slaWarningThreshold;
 
     @NotNull
-    @Column(name = "sla_warning_unit")
+    @Enumerated(EnumType.STRING)
+    @Convert(converter = TimeUnitConverter.class)
+    @ColumnTransformer(write = "?::time_unit")
+    @Column(name = "sla_warning_unit", columnDefinition = "time_unit")
     private TimeUnit slaWarningUnit;
 
      @NotNull
@@ -46,6 +52,17 @@ public class Priority {
     private Integer slaOverdueThreshold;
 
     @NotNull
-    @Column(name = "sla_overdue_unit")
+    @Enumerated(EnumType.STRING)
+    @Convert(converter = TimeUnitConverter.class)
+    @ColumnTransformer(write = "?::time_unit")
+    @Column(name = "sla_overdue_unit", columnDefinition = "time_unit")
     private TimeUnit slaOverdueUnit;
+
+    @CreationTimestamp
+    @Column(name="created", nullable = false, updatable = false)
+    private Timestamp created;
+
+    @UpdateTimestamp
+    @Column(name="modified", nullable = false)
+    private Timestamp modified;
 }

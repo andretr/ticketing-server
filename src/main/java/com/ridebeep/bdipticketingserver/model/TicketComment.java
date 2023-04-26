@@ -18,23 +18,21 @@ import java.util.UUID;
 @Data
 @ToString
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "ticket_comments")
+public class TicketComment {
 
     @Id
-    @Column(name = "category_id")
-    private UUID categoryId;
+    @Column(name = "ticket_comments_id")
+    private UUID commentId;
 
     @NotNull
-    @Column(name="tenant_id")
-    private UUID tenantId;
-
-    @Column(name="default_priority_id")
-    private UUID defaultPriorityId;
+    @Column(name = "ticket_id")
+    private UUID ticketId;
 
     @NotNull
-    @Column(name = "category_name", unique = true)
-    private String categoryName;
+    @Lob
+    @Column(name="comment")
+    private String comment;
 
     @CreationTimestamp
     @Column(name="created", nullable = false, updatable = false)
@@ -43,5 +41,4 @@ public class Category {
     @UpdateTimestamp
     @Column(name="modified", nullable = false)
     private Timestamp modified;
-
 }

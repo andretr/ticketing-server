@@ -8,6 +8,7 @@ public class BdipTicketingServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BdipTicketingServerApplication.class, args);
+		System.out.println("Application loaded successfully");
 	}
 
 }

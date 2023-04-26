@@ -1,14 +1,16 @@
 package com.ridebeep.bdipticketingserver.model;
 
 
-import com.ridebeep.bdipticketingserver.model.id.TicketRecipientId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -20,15 +22,19 @@ import java.util.UUID;
 public class TicketHistory {
 
     @Id
-    @Column(name = "ticket_history_id", columnDefinition = "BINARY(16)")
+    @Column(name = "ticket_history_id")
     private UUID ticketHistoryId;
 
     @NotNull
-    @Column(name="ticket_id", columnDefinition = "BINARY(16)")
+    @Column(name="ticket_id")
     private UUID ticketId;
 
     @NotNull
     @Lob
     @Column(name = "event_detail")
     private String eventDetail;
+
+    @CreationTimestamp
+    @Column(name="created", nullable = false, updatable = false)
+    private Timestamp created;
 }

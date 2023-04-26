@@ -1,14 +1,15 @@
 package com.ridebeep.bdipticketingserver.model;
 
-import com.ridebeep.bdipticketingserver.model.enums.Status;
-import com.ridebeep.bdipticketingserver.model.id.TicketRecipientId;
+import com.ridebeep.bdipticketingserver.model.enums.TicketStatus;
+import com.ridebeep.bdipticketingserver.utils.TicketStatusConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,19 +21,19 @@ import java.util.UUID;
 @Data
 @ToString
 @Entity
-@Table(name = "ticket_history")
+@Table(name = "ticket")
 public class Ticket {
 
     @Id
-    @Column(name="ticket_id", columnDefinition = "BINARY(16)")
+    @Column(name="ticket_id")
     private UUID ticketId;
 
     @NotNull
-    @Column(name = "category_id", columnDefinition = "BINARY(16)")
+    @Column(name = "category_id")
     private UUID categoryId;
 
     @NotNull
-    @Column(name = "priority_id", columnDefinition = "BINARY(16)")
+    @Column(name = "priority_id")
     private UUID priorityId;
 
     @NotNull
@@ -49,8 +50,11 @@ public class Ticket {
     private String description;
 
     @NotNull
-    @Column(name = "status")
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Convert(converter = TicketStatusConverter.class)
+    @ColumnTransformer(write = "?::ticket_status")
+    @Column(name = "status", columnDefinition = "ticket_status")
+    private TicketStatus status;
 
     @NotNull
     @Lob

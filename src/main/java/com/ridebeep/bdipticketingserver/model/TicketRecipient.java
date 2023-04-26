@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -19,10 +20,10 @@ import java.util.UUID;
 public class TicketRecipient {
 
     @Id
-    @Column(name = "ticket_id", columnDefinition = "BINARY(16)")
+    @Column(name = "ticket_id")
     private UUID ticketId;
 
     @Id
-    @Column(name="user_id", columnDefinition = "BINARY(16)")
+    @Column(name="user_id")
     private UUID userId;
 }

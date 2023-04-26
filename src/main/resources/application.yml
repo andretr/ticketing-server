@@ -36,15 +36,18 @@ spring:
     username: ticketing
     password: ticketing-password-local
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    defer-datasource-initialization: true
-    show-sql: true
+    show-sql: false
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-description: 'Initial'
+    baseline-on-migrate: true
   data:
     rest:
       enable-enum-translation: true
