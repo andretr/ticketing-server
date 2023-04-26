@@ -9,13 +9,13 @@ public enum TimeUnit {
     HOURS("MINUTES"),
     DAYS("DAYS");
 
-    private String timeUnit;
+    private String unit;
 
     TimeUnit(String timeUnit) {
-        this.timeUnit = timeUnit;
+        this.unit = timeUnit;
     }
 
-    public String getTimeUnit() {
-        return timeUnit;
+    public String getUnit() {
+        return unit;
     }
 }

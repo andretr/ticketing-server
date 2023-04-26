@@ -5,6 +5,7 @@ import com.ridebeep.bdipticketingserver.repository.TenantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +37,6 @@ class TenantServiceImpl implements TenantService {
 
     @Override
     public List<Tenant> returnAllTenantsbyIds(List<UUID> tenantIds) {
-        return null;
+        return new ArrayList<>();
     }
 }
