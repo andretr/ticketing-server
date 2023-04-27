@@ -29,8 +29,7 @@ public class TicketHistory {
     private UUID ticketId;
 
     @NotNull
-    @Lob
-    @Column(name = "event_detail")
+    @Column(name = "event_detail", columnDefinition="TEXT")
     private String eventDetail;
 
     @CreationTimestamp

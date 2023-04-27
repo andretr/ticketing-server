@@ -44,8 +44,7 @@ public class Ticket {
     private String title;
 
     @NotNull
-    @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @NotNull
@@ -56,8 +55,7 @@ public class Ticket {
     private TicketStatus status;
 
     @NotNull
-    @Lob
-    @Column(name = "event_data")
+    @Column(name = "event_data", columnDefinition="TEXT")
     private String eventData;
 
     @CreationTimestamp

@@ -1,5 +1,6 @@
 server:
   port: 8007
+  error.include-message: always
 management:
   endpoints:
     enabled-by-default: false
@@ -39,7 +40,7 @@ spring:
     show-sql: false
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true

@@ -29,8 +29,7 @@ public class TicketComment {
     private UUID ticketId;
 
     @NotNull
-    @Lob
-    @Column(name="comment")
+    @Column(name="comment", columnDefinition="TEXT")
     private String comment;
 
     @CreationTimestamp
