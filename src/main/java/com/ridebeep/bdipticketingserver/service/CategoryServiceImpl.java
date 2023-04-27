@@ -1,7 +1,11 @@
 package com.ridebeep.bdipticketingserver.service;
 
 import com.ridebeep.bdipticketingserver.model.Category;
+import com.ridebeep.bdipticketingserver.model.User;
+import com.ridebeep.bdipticketingserver.model.UserCategory;
 import com.ridebeep.bdipticketingserver.repository.CategoryRepository;
+import com.ridebeep.bdipticketingserver.repository.UserCategoryRepository;
+import com.ridebeep.bdipticketingserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,11 @@ class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    UserCategoryRepository userCategoryRepository;
+
     @Override
     public List<Category> returnAllCategories(UUID tenantId) {
         return categoryRepository.findAllByHiddenTenantIsFalse();
@@ -28,15 +37,15 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(UUID tenantId, Category newCategory) throws IllegalArgumentException{
-        validateTenantIdMatchUrl(tenantId, newCategory);
+        validateTenantIdMatchUrl(tenantId, newCategory.getTenantId());
         return categoryRepository.save(newCategory);
     }
 
     @Override
     public Category updateCategory(UUID tenantId, UUID categoryId, Category updatedCategory) {
 
-        validateTenantIdMatchUrl(tenantId, updatedCategory);
-        validateCategoryIdMatchUrl(categoryId, updatedCategory);
+        validateTenantIdMatchUrl(tenantId, updatedCategory.getTenantId());
+        validateCategoryIdMatchUrl(categoryId, updatedCategory.getCategoryId());
 
         Category category = categoryRepository
                 .getByTenantIdAndCategoryId(tenantId, categoryId)
@@ -52,25 +61,73 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(UUID tenantId, UUID categoryId) {
 
-        Category category = categoryRepository
-                .getByTenantIdAndCategoryId(tenantId, categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId));
+        Category category = getByTenantIdAndCategoryId(tenantId, categoryId)
+                        .orElseThrow(() ->
+                        new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId));
 
         categoryRepository.delete(category);
     }
 
+    @Override
+    public List<User> getAllUsersByCategory(UUID tenantId, UUID categoryId) {
 
-    private static void validateTenantIdMatchUrl(UUID tenantId, Category category) {
-        if (!category.getTenantId().equals(tenantId)) {
-            log.info("tenantId must match url");
+        Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, categoryId);
+        if(category.isEmpty())
+            throw  new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId);
+
+        return userCategoryRepository.getAllUsersFromCategory(categoryId);
+    }
+
+    @Override
+    public Optional<UserCategory> getUserCategory(UUID tenantId, UUID categoryId, UUID userId) {
+
+        validateTenantForUserCategory(tenantId, new UserCategory(categoryId, userId));
+        return userCategoryRepository.findUserCategoryByCategoryIdAndUserId(categoryId, userId);
+    }
+
+    @Override
+    public UserCategory addUserCategory(UUID tenantId, UUID categoryId, UserCategory userCategory) {
+
+        validateCategoryIdMatchUrl(categoryId, userCategory.getCategoryId());
+        validateTenantForUserCategory(tenantId, new UserCategory(userCategory.getCategoryId(), userCategory.getUserId()));
+        return userCategoryRepository.save(userCategory);
+    }
+
+    @Override
+    public void deleteUserFromCategory(UUID tenantId, UUID categoryId, UUID userId) {
+
+        UserCategory userCategory =
+                getUserCategory(tenantId,categoryId,userId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Could not find category with id " + categoryId + " and user id " + userId));
+
+        userCategoryRepository.delete(userCategory);
+    }
+
+    //Validation Methods
+
+
+    private static void validateTenantIdMatchUrl(UUID tenantIdFromUrlPath, UUID tenantId) {
+        if (!tenantIdFromUrlPath.equals(tenantId)) {
             throw new IllegalArgumentException("tenantId must match request url");
         }
     }
 
-    private static void validateCategoryIdMatchUrl(UUID categoryId, Category category) {
-        if (!category.getCategoryId().equals(categoryId)) {
+    private static void validateCategoryIdMatchUrl(UUID categoryIdFromUrlPath, UUID categoryIdy) {
+        if (!categoryIdFromUrlPath.equals(categoryIdy)) {
             log.info("categoryId must match url");
             throw new IllegalArgumentException("categoryId must match request url");
         }
+    }
+
+    private void validateTenantForUserCategory(UUID tenantId, UserCategory userCategory) {
+
+        Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, userCategory.getCategoryId());
+        if(category.isEmpty())
+            throw  new IllegalArgumentException("Could not find category with id " + userCategory.getCategoryId() + " in tenant " + tenantId);
+
+        Optional<User> user = userRepository.getByTenantIdAndUserId(tenantId, userCategory.getUserId());
+        if(user.isEmpty())
+            throw  new IllegalArgumentException("Could not find user with id " + userCategory.getUserId() + " in tenant " + tenantId);
     }
 }

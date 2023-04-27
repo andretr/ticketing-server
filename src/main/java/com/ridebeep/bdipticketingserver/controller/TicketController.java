@@ -12,11 +12,11 @@ import java.util.UUID;
 @RequestMapping("/tenants/{tenantId}/tickets")
 public class TicketController {
 
-    //TODO Pagination for tickets??
-    //TODO ticket comments
+    //TODO acknowledge/close ticket -> change Ticket Status
+    //TODO reassign users to tickets
+    //TODO ticket comments -> get, add, update, delete
     //TODO ticket history
-    //TODO reassign tickets
-    //TODO reassign tickets
+    //TODO Pagination for tickets??
 
     @GetMapping
     public ResponseEntity<List<Ticket>> returnAllTickets(@PathVariable UUID tenantId) {

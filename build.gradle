@@ -37,6 +37,14 @@ test {
 	useJUnitPlatform()
 }
 
+tasks.withType(Test) {
+	testLogging {
+		exceptionFormat "Full"
+		events "started", "skipped", "passed", "failed"
+		showStandardStreams true
+	}
+}
+
 tasks.named("jar") {
 	enabled = false
 }

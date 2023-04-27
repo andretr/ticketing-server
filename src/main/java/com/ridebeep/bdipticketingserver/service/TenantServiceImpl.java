@@ -26,8 +26,8 @@ class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    public Optional<Tenant> returnAllTenantsByCode(String tenantCode) {
-        return tenantRepository.findAllByTenantCodeAndHiddenTenantIsFalse(tenantCode);
+    public Optional<Tenant> returnTenantById(UUID tenantId) {
+        return tenantRepository.findByTenantIdAndHiddenTenantIsFalse(tenantId);
     }
 
     @Override

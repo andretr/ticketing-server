@@ -12,7 +12,7 @@ public interface TenantService {
 
     List<UUID> returnAllTenantIds();
 
-    Optional<Tenant> returnAllTenantsByCode(String tenantCode);
+    Optional<Tenant> returnTenantById(UUID tenantId);
 
     Optional<Tenant> getTenantById(UUID tenantId);
 

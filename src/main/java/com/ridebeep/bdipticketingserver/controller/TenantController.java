@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /** This controller should contain read-only functions. Tenant creation/updates/deletion is handled by the bdip-organization-server*/
@@ -36,10 +37,10 @@ public class TenantController {
      * Return a specific (non-hidden) tenant by unique tenant code
      * @return Tenant | Resource not found exception
      */
-    @GetMapping("code/{tenantCode}")
-    public ResponseEntity<Tenant> returnAllTenantsByCode(@PathVariable("tenantCode") String tenantCode) {
+    @GetMapping("/{tenantId}")
+    public ResponseEntity<Tenant> getTenantById(@PathVariable("tenantId") UUID tenantId) {
 
-        Optional<Tenant> tenant = tenantService.returnAllTenantsByCode(tenantCode);
+        Optional<Tenant> tenant = tenantService.returnTenantById(tenantId);
         return tenant
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

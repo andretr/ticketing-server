@@ -12,6 +12,6 @@ public interface TenantRepository extends JpaRepository<Tenant, UUID> {
     List<Tenant> findAllByHiddenTenantIsFalse();
     @Query("SELECT tenant.tenantId FROM Tenant tenant WHERE tenant.hiddenTenant = false")
     List<UUID> findAllNonHiddenTenantIds();
-    Optional<Tenant> findAllByTenantCodeAndHiddenTenantIsFalse(String tenantCode);
+    Optional<Tenant> findByTenantIdAndHiddenTenantIsFalse(UUID tenantId);
 
 }
