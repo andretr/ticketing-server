@@ -42,7 +42,9 @@ public class CategoryController {
     public ResponseEntity<Category> addCategory(@PathVariable UUID tenantId, @Valid @RequestBody Category newCategory) {
         try {
             Category category = categoryService.addCategory(tenantId, newCategory);
-            return ResponseEntity.ok(category);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(category);
         } catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

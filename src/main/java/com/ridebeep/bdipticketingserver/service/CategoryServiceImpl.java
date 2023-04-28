@@ -6,6 +6,7 @@ import com.ridebeep.bdipticketingserver.model.UserCategory;
 import com.ridebeep.bdipticketingserver.repository.CategoryRepository;
 import com.ridebeep.bdipticketingserver.repository.UserCategoryRepository;
 import com.ridebeep.bdipticketingserver.repository.UserRepository;
+import com.ridebeep.bdipticketingserver.utils.MessagesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,8 @@ class CategoryServiceImpl implements CategoryService {
                     updatedCategory.setCreated(c.getCreated());
                     return updatedCategory;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId));
+                .orElseThrow(() ->
+                    new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId)));
 
         return categoryRepository.save(category);
     }
@@ -61,9 +63,10 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(UUID tenantId, UUID categoryId) {
 
-        Category category = getByTenantIdAndCategoryId(tenantId, categoryId)
-                        .orElseThrow(() ->
-                        new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId));
+        Category category =
+                getByTenantIdAndCategoryId(tenantId, categoryId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId)));
 
         categoryRepository.delete(category);
     }
@@ -73,7 +76,7 @@ class CategoryServiceImpl implements CategoryService {
 
         Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, categoryId);
         if(category.isEmpty())
-            throw  new IllegalArgumentException("Could not find category with id " + categoryId + " in tenant " + tenantId);
+            throw new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId));
 
         return userCategoryRepository.getAllUsersFromCategory(categoryId);
     }
@@ -99,7 +102,7 @@ class CategoryServiceImpl implements CategoryService {
         UserCategory userCategory =
                 getUserCategory(tenantId,categoryId,userId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Could not find category with id " + categoryId + " and user id " + userId));
+                        new IllegalArgumentException(MessagesUtil.userCategoryError(categoryId, userId)));
 
         userCategoryRepository.delete(userCategory);
     }
@@ -107,7 +110,9 @@ class CategoryServiceImpl implements CategoryService {
     //Validation Methods
 
 
+
     private static void validateTenantIdMatchUrl(UUID tenantIdFromUrlPath, UUID tenantId) {
+
         if (!tenantIdFromUrlPath.equals(tenantId)) {
             throw new IllegalArgumentException("tenantId must match request url");
         }
@@ -115,7 +120,7 @@ class CategoryServiceImpl implements CategoryService {
 
     private static void validateCategoryIdMatchUrl(UUID categoryIdFromUrlPath, UUID categoryIdy) {
         if (!categoryIdFromUrlPath.equals(categoryIdy)) {
-            log.info("categoryId must match url");
+            log.info("categoryId must match url {} {} {} {}", 120, 12, 14, 0);
             throw new IllegalArgumentException("categoryId must match request url");
         }
     }

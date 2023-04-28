@@ -1,6 +1,5 @@
 package com.ridebeep.bdipticketingserver.repository;
 
-import com.ridebeep.bdipticketingserver.model.Category;
 import com.ridebeep.bdipticketingserver.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

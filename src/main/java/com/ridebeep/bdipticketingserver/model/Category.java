@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -40,10 +40,10 @@ public class Category {
 
     @CreationTimestamp
     @Column(name="created", nullable = false, updatable = false)
-    private Timestamp created;
+    private LocalDateTime created;
 
     @UpdateTimestamp
     @Column(name="modified", nullable = false)
-    private Timestamp modified;
+    private LocalDateTime modified;
 
 }
