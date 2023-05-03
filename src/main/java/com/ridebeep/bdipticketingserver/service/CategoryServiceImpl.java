@@ -1,5 +1,8 @@
 package com.ridebeep.bdipticketingserver.service;
 
+import com.ridebeep.bdipticketingserver.exceptions.InvalidArgumentException;
+import com.ridebeep.bdipticketingserver.exceptions.ResourceAlreadyExistsException;
+import com.ridebeep.bdipticketingserver.exceptions.ResourceNotFoundException;
 import com.ridebeep.bdipticketingserver.model.Category;
 import com.ridebeep.bdipticketingserver.model.User;
 import com.ridebeep.bdipticketingserver.model.UserCategory;
@@ -28,7 +31,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> returnAllCategories(UUID tenantId) {
-        return categoryRepository.findAllByHiddenTenantIsFalse();
+        return categoryRepository.findAllByTenant(tenantId);
     }
 
     @Override
@@ -37,8 +40,17 @@ class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category addCategory(UUID tenantId, Category newCategory) throws IllegalArgumentException{
+    public Category addCategory(UUID tenantId, Category newCategory){
+
         validateTenantIdMatchUrl(tenantId, newCategory.getTenantId());
+
+        if (newCategory.getCategoryId() == null) {
+            newCategory.setCategoryId(UUID.randomUUID());
+        } else {
+            if(getByTenantIdAndCategoryId(tenantId, newCategory.getCategoryId()).isPresent())
+               throw new ResourceAlreadyExistsException(MessagesUtil.categoryIdAlreadyExistsError(newCategory.getCategoryId()));
+        }
+
         return categoryRepository.save(newCategory);
     }
 
@@ -55,7 +67,7 @@ class CategoryServiceImpl implements CategoryService {
                     return updatedCategory;
                 })
                 .orElseThrow(() ->
-                    new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId)));
+                    new ResourceNotFoundException(MessagesUtil.categoryTenantError(categoryId, tenantId)));
 
         return categoryRepository.save(category);
     }
@@ -66,7 +78,7 @@ class CategoryServiceImpl implements CategoryService {
         Category category =
                 getByTenantIdAndCategoryId(tenantId, categoryId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId)));
+                        new ResourceNotFoundException(MessagesUtil.categoryTenantError(categoryId, tenantId)));
 
         categoryRepository.delete(category);
     }
@@ -76,7 +88,7 @@ class CategoryServiceImpl implements CategoryService {
 
         Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, categoryId);
         if(category.isEmpty())
-            throw new IllegalArgumentException(MessagesUtil.tenantCategoryError(categoryId, tenantId));
+            throw new ResourceNotFoundException(MessagesUtil.categoryTenantError(categoryId, tenantId));
 
         return userCategoryRepository.getAllUsersFromCategory(categoryId);
     }
@@ -84,7 +96,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<UserCategory> getUserCategory(UUID tenantId, UUID categoryId, UUID userId) {
 
-        validateTenantForUserCategory(tenantId, new UserCategory(categoryId, userId));
+        validateUserCategoryBelongToTenant(tenantId, new UserCategory(categoryId, userId));
         return userCategoryRepository.findUserCategoryByCategoryIdAndUserId(categoryId, userId);
     }
 
@@ -92,7 +104,7 @@ class CategoryServiceImpl implements CategoryService {
     public UserCategory addUserCategory(UUID tenantId, UUID categoryId, UserCategory userCategory) {
 
         validateCategoryIdMatchUrl(categoryId, userCategory.getCategoryId());
-        validateTenantForUserCategory(tenantId, new UserCategory(userCategory.getCategoryId(), userCategory.getUserId()));
+        validateUserCategoryBelongToTenant(tenantId, new UserCategory(userCategory.getCategoryId(), userCategory.getUserId()));
         return userCategoryRepository.save(userCategory);
     }
 
@@ -102,37 +114,35 @@ class CategoryServiceImpl implements CategoryService {
         UserCategory userCategory =
                 getUserCategory(tenantId,categoryId,userId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(MessagesUtil.userCategoryError(categoryId, userId)));
+                        new ResourceNotFoundException(MessagesUtil.userCategoryError(categoryId, userId)));
 
         userCategoryRepository.delete(userCategory);
     }
 
-    //Validation Methods
-
-
-
+    //Calidation Methods
     private static void validateTenantIdMatchUrl(UUID tenantIdFromUrlPath, UUID tenantId) {
 
         if (!tenantIdFromUrlPath.equals(tenantId)) {
-            throw new IllegalArgumentException("tenantId must match request url");
+            throw new InvalidArgumentException(MessagesUtil.tenantIdtUrlError(tenantId));
         }
     }
 
-    private static void validateCategoryIdMatchUrl(UUID categoryIdFromUrlPath, UUID categoryIdy) {
-        if (!categoryIdFromUrlPath.equals(categoryIdy)) {
-            log.info("categoryId must match url {} {} {} {}", 120, 12, 14, 0);
-            throw new IllegalArgumentException("categoryId must match request url");
+    private static void validateCategoryIdMatchUrl(UUID categoryIdFromUrlPath, UUID categoryId) {
+        if (!categoryIdFromUrlPath.equals(categoryId)) {
+            throw new InvalidArgumentException(MessagesUtil.categoryIdUrlError(categoryId));
         }
     }
 
-    private void validateTenantForUserCategory(UUID tenantId, UserCategory userCategory) {
-
-        Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, userCategory.getCategoryId());
-        if(category.isEmpty())
-            throw  new IllegalArgumentException("Could not find category with id " + userCategory.getCategoryId() + " in tenant " + tenantId);
+    private void validateUserCategoryBelongToTenant(UUID tenantId, UserCategory userCategory) {
 
         Optional<User> user = userRepository.getByTenantIdAndUserId(tenantId, userCategory.getUserId());
         if(user.isEmpty())
-            throw  new IllegalArgumentException("Could not find user with id " + userCategory.getUserId() + " in tenant " + tenantId);
+            throw  new InvalidArgumentException(MessagesUtil.userTenantError(userCategory.getUserId(), tenantId));
+
+        Optional<Category> category = categoryRepository.getByTenantIdAndCategoryId(tenantId, userCategory.getCategoryId());
+        if(category.isEmpty())
+            throw  new InvalidArgumentException(MessagesUtil.categoryTenantError(userCategory.getCategoryId(), tenantId));
+
+
     }
 }

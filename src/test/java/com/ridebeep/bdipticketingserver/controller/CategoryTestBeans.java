@@ -36,9 +36,26 @@ public class CategoryTestBeans {
     }
     @Bean
     public static Category returnCategoryToAdd() {
-        Category mockCategory = new Category();
-        mockCategory.setCategoryName("TEST_CATEGORY");
-        return mockCategory;
+        return new Category(
+                null,
+                TENANT_ID,
+                null,
+                "TEST_CATEGORY",
+                null,
+                null
+        );
+    }
+
+    @Bean
+    public static Category returnCategoryToAddWithId() {
+        return new Category(
+                CATEGORY_ID,
+                TENANT_ID,
+                null,
+                "TEST_CATEGORY",
+                null,
+                null
+        );
     }
 
     @Bean
@@ -48,7 +65,7 @@ public class CategoryTestBeans {
                 TENANT_ID,
                 null,
                 "UPDATED_CATEGORY",
-                dateTime,
-                dateTime);
+                null,
+                null);
     }
 }

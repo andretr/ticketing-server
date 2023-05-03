@@ -159,8 +159,6 @@ ALTER TABLE ONLY public.users
 ALTER TABLE ONLY public.categories ADD CONSTRAINT categories_pkey UNIQUE (category_id);
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_tenant_id_fkey FOREIGN KEY (tenant_id) REFERENCES public.tenants(tenant_id) ON DELETE CASCADE;
-ALTER TABLE ONLY public.categories
-    ADD CONSTRAINT providers_category_name_key UNIQUE (category_name);
 
 -- PRIORITIES ALTERATIONS
 ALTER TABLE ONLY public.priorities ADD CONSTRAINT priorities_pkey UNIQUE (priority_id);

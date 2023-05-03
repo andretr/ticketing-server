@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -40,63 +39,41 @@ public class CategoryController {
 
     @PostMapping()
     public ResponseEntity<Category> addCategory(@PathVariable UUID tenantId, @Valid @RequestBody Category newCategory) {
-        try {
-            Category category = categoryService.addCategory(tenantId, newCategory);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(category);
-        } catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        Category category = categoryService.addCategory(tenantId, newCategory);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(category);
+
     }
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<Category> updateCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId, @Valid @RequestBody Category newCategory) {
-        try {
-            Category category = categoryService.updateCategory(tenantId, categoryId, newCategory);
-            return ResponseEntity.ok(category);
-        } catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        Category category = categoryService.updateCategory(tenantId, categoryId, newCategory);
+        return ResponseEntity.ok(category);
     }
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Object> deleteCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId) {
-        try {
-            categoryService.deleteCategory(tenantId, categoryId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        categoryService.deleteCategory(tenantId, categoryId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{categoryId}/users")
     public ResponseEntity<List<User>> getAllUsersByCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId) {
-        try {
-            List<User> usersByCategory = categoryService.getAllUsersByCategory(tenantId, categoryId);
-            return ResponseEntity.ok(usersByCategory);
-        } catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        List<User> usersByCategory = categoryService.getAllUsersByCategory(tenantId, categoryId);
+        return ResponseEntity.ok(usersByCategory);
+
     }
     @PostMapping("/{categoryId}/users")
-    public ResponseEntity<Object> addUserToCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId, @Valid @RequestBody UserCategory newUserCategory) {
-        try {
-            UserCategory userCategory  = categoryService.addUserCategory(tenantId, categoryId, newUserCategory);
-            return ResponseEntity.ok(userCategory);
-        } catch (IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public ResponseEntity<UserCategory> addUserToCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId, @Valid @RequestBody UserCategory newUserCategory) {
+        UserCategory userCategory  = categoryService.addUserCategory(tenantId, categoryId, newUserCategory);
+        return ResponseEntity.ok(userCategory);
+
     }
 
     @DeleteMapping("/{categoryId}/users/{userId}")
     public ResponseEntity<Object> deleteUserFromCategory(@PathVariable UUID tenantId, @PathVariable UUID categoryId, @PathVariable UUID userId) {
-
-        try {
-            categoryService.deleteUserFromCategory(tenantId, categoryId, userId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        categoryService.deleteUserFromCategory(tenantId, categoryId, userId);
+        return ResponseEntity.noContent().build();
     }
 }

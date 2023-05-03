@@ -35,7 +35,7 @@ public class Category {
     private UUID defaultPriorityId;
 
     @NotNull
-    @Column(name = "category_name", unique = true)
+    @Column(name = "category_name")
     private String categoryName;
 
     @CreationTimestamp

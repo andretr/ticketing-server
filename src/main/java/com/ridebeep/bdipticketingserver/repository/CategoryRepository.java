@@ -12,14 +12,15 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
     @Query("SELECT c " +
             "FROM Category c, Tenant t " +
             "WHERE c.tenantId = t.tenantId " +
+            "AND t.tenantId = :tenantId " +
             "AND t.hiddenTenant is false ")
-    List<Category> findAllByHiddenTenantIsFalse();
+    List<Category> findAllByTenant(UUID tenantId);
 
     @Query("SELECT c " +
             "FROM Category c, Tenant t " +
-            "WHERE c.categoryId = :categoryId " +
-            "AND c.tenantId = :tenantId " +
-            "AND c.tenantId = t.tenantId " +
-            "AND t.hiddenTenant is false ")
+            "WHERE c.tenantId = t.tenantId " +
+            "AND t.tenantId = :tenantId " +
+            "AND t.hiddenTenant is false " +
+            "AND c.categoryId = :categoryId ")
     Optional<Category> getByTenantIdAndCategoryId(UUID tenantId, UUID categoryId);
 }
