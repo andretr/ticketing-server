@@ -1,29 +1,29 @@
 version: '2'
 
 services:
-#  app:
-#    image: 'bdip-ticketing-server-main:latest'
-#    container_name: bdip-ticketing-server
-#    build:
-#      context: .
-#    ports:
-#      - "8007:8007"
-#    depends_on:
-#      - db
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/testdb
-#      - SPRING_DATASOURCE_USERNAME=ticketing
-#      - SPRING_DATASOURCE_PASSWORD=ticketing-password-local
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+  app:
+    image: 'bdip-ticket-server:latest'
+    container_name: bdip-ticket-server
+    build:
+      context: .
+    ports:
+      - "8007:8007"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tickets
+      - SPRING_DATASOURCE_USERNAME=tickets
+      - SPRING_DATASOURCE_PASSWORD=tickets-password-local
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=ticketing
-      - POSTGRES_PASSWORD=ticketing-password-local
-      - POSTGRES_DB=testdb
+      - POSTGRES_USER=tickets
+      - POSTGRES_PASSWORD=tickets-password-local
+      - POSTGRES_DB=tickets
     volumes:
       - pgdata:/var/lib/postgresql/data
 volumes:

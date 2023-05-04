@@ -33,9 +33,9 @@ info:
       target: "@java.version@"
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/testdb
-    username: ticketing
-    password: ticketing-password-local
+    url: jdbc:postgresql://localhost:5432/tickets
+    username: tickets
+    password: tickets-password-local
   jpa:
     show-sql: false
     open-in-view: false
@@ -55,4 +55,4 @@ spring:
 logging:
   level:
     root: WARN
-    com.ridebeep.bdipticketingserver: INFO
+    com.ridebeep.bdipticketserver: INFO

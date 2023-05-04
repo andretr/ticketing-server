@@ -12,7 +12,7 @@ SET row_security = off;
 SET default_tablespace = '';
 
 --
--- Name: ticket_status; Type: TYPE; Schema: public; Owner: ticketing
+-- Name: ticket_status; Type: TYPE; Schema: public; Owner: tickets
 --
 
 CREATE TYPE public.ticket_status AS ENUM (
@@ -24,10 +24,10 @@ CREATE TYPE public.ticket_status AS ENUM (
     'DELETED'
     );
 
-ALTER TYPE public.ticket_status OWNER TO ticketing;
+ALTER TYPE public.ticket_status OWNER TO tickets;
 
 --
--- Name: ticket_status; Type: TYPE; Schema: public; Owner: ticketing
+-- Name: ticket_status; Type: TYPE; Schema: public; Owner: tickets
 --
 
 CREATE TYPE public.time_unit AS ENUM (
@@ -40,9 +40,12 @@ CREATE TYPE public.time_unit AS ENUM (
     'DAYS'
     );
 
-ALTER TYPE public.time_unit OWNER TO ticketing;
+ALTER TYPE public.time_unit OWNER TO tickets;
 
--- public.tenants definition
+--
+-- Name: tenants; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.tenants (
     tenant_id uuid NOT NULL,
     hidden_tenant boolean NOT NULL,
@@ -50,9 +53,12 @@ CREATE TABLE public.tenants (
     tenant_code varchar(255) NOT NULL
 );
 
-ALTER TABLE public.tenants OWNER TO ticketing;
+ALTER TABLE public.tenants OWNER TO tickets;
 
--- public.users definition
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.users (
     user_id uuid NOT NULL,
     tenant_id uuid NOT NULL,
@@ -60,9 +66,12 @@ CREATE TABLE public.users (
     name varchar(255) NOT NULL
 );
 
-ALTER TABLE public.users OWNER TO ticketing;
+ALTER TABLE public.users OWNER TO tickets;
 
--- public.categories definition
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.categories (
     category_id uuid NOT NULL,
     tenant_id uuid NOT NULL,
@@ -72,9 +81,12 @@ CREATE TABLE public.categories (
     modified timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE public.categories OWNER TO ticketing;
+ALTER TABLE public.categories OWNER TO tickets;
 
--- public.priorities definition
+--
+-- Name: priorities; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.priorities (
     priority_id uuid NOT NULL,
     category_id uuid NOT NULL,
@@ -87,9 +99,12 @@ CREATE TABLE public.priorities (
     modified timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE public.priorities OWNER TO ticketing;
+ALTER TABLE public.priorities OWNER TO tickets;
 
--- public.tickets definition
+--
+-- Name: tickets; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.tickets (
     ticket_id uuid NOT NULL,
     category_id uuid NOT NULL,
@@ -106,9 +121,12 @@ CREATE TABLE public.tickets (
     modified timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE public.tickets OWNER TO ticketing;
+ALTER TABLE public.tickets OWNER TO tickets;
 
--- public.ticket_comments definition
+--
+-- Name: ticket_comments; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.ticket_comments (
     ticket_comments_id uuid NOT NULL,
     ticket_id uuid NOT NULL,
@@ -117,9 +135,12 @@ CREATE TABLE public.ticket_comments (
     modified timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE public.ticket_comments OWNER TO ticketing;
+ALTER TABLE public.ticket_comments OWNER TO tickets;
 
--- public.ticket_history definition
+--
+-- Name: ticket_history; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.ticket_history (
     ticket_history_id uuid NOT NULL,
     ticket_id uuid NOT NULL,
@@ -127,23 +148,29 @@ CREATE TABLE public.ticket_history (
     created timestamp with time zone DEFAULT now() NOT NULL
 );
 
-ALTER TABLE public.ticket_history OWNER TO ticketing;
+ALTER TABLE public.ticket_history OWNER TO tickets;
 
--- public.ticket_recipients definition
+--
+-- Name: ticket_recipients; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.ticket_recipients (
     ticket_id uuid NOT NULL,
     user_id uuid NOT NULL
 );
 
-ALTER TABLE public.ticket_recipients OWNER TO ticketing;
+ALTER TABLE public.ticket_recipients OWNER TO tickets;
 
--- public.user_categories definition
+--
+-- Name: user_categories; Type: TABLE; Schema: public; Owner: tickets
+--
+
 CREATE TABLE public.user_categories (
     category_id uuid NOT NULL,
     user_id uuid NOT NULL
 );
 
-ALTER TABLE public.user_categories OWNER TO ticketing;
+ALTER TABLE public.user_categories OWNER TO tickets;
 
 -- TENANTS ALTERATIONS
 ALTER TABLE ONLY public.tenants ADD CONSTRAINT tenants_pkey UNIQUE (tenant_id);
